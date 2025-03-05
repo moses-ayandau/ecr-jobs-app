@@ -24,7 +24,6 @@ public class JobsController {
         jobs.add(new Job("Product Manager", "Oversee product development and strategy", List.of("Agile", "Scrum", "Market Research")));
         jobs.add(new Job("QA Engineer", "Ensure software quality and testing", List.of("Selenium", "JUnit", "Test Automation")));
         jobs.add(new Job("UI/UX Designer", "Create intuitive and visually appealing user experiences", List.of("Figma", "Adobe XD", "User Research")));
-        jobs.add(new Job("Blockchain Developer", "Develop decentralized applications and smart contracts", List.of("Ethereum", "Solidity", "Web3.js")));
 
         model.addAttribute("jobs", jobs);
 
