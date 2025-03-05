@@ -1,0 +1,40 @@
+name: Deploy to Amazon ECR
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build Java App (For Java apps)
+        run: mvn clean package || ./gradlew bootJar
+
+      - name: Login to Amazon ECR
+        env:
+          AWS_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/e4q9f5a4
+
+      - name: Build Docker image
+        run: docker build -t moses-winbood-ayandau .
+
+      - name: Tag Docker image
+        run: docker tag moses-winbood-ayandau:latest public.ecr.aws/e4q9f5a4/moses-winbood-ayandau:latest
+
+      - name: Push Docker image to Amazon ECR
+        run: docker push public.ecr.aws/e4q9f5a4/moses-winbood-ayandau:latest

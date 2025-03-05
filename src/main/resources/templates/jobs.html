@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Listings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        .job-list {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .job-item {
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+        }
+        .job-item:last-child {
+            border-bottom: none;
+        }
+        .job-title {
+            font-size: 1.5em;
+            color: #333;
+        }
+        .job-description {
+            margin-top: 10px;
+            color: #666;
+        }
+        .job-skills {
+            margin-top: 10px;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+<div class="job-list">
+    <h1>Job Listings</h1>
+    <div th:each="job : ${jobs}" class="job-item">
+        <h2 class="job-title" th:text="${job.title}">Job Title</h2>
+        <p class="job-description" th:text="${job.description}">Job Description</p>
+        <p class="job-skills">
+            Skills:
+            <span th:each="skill, iterStat : ${job.skills}">
+    [[${skill}]]<span th:if="${!iterStat.last}">, </span>
+</span>
+
+        </p>
+    </div>
+</div>
+</body>
+</html>
