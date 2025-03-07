@@ -3,55 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <title>Job Listings</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f9f9f9;
-        }
-        .job-list {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .job-item {
-            border-bottom: 1px solid #ddd;
-            padding: 15px 0;
-        }
-        .job-item:last-child {
-            border-bottom: none;
-        }
-        .job-title {
-            font-size: 1.5em;
-            color: #333;
-        }
-        .job-description {
-            margin-top: 10px;
-            color: #666;
-        }
-        .job-skills {
-            margin-top: 10px;
-            color: #4CAF50;
-        }
-    </style>
-</head>
-<body>
-<div class="job-list">
-    <h1>Job Listings</h1>
-    <div th:each="job : ${jobs}" class="job-item">
-        <h2 class="job-title" th:text="${job.title}">Job Title</h2>
-        <p class="job-description" th:text="${job.description}">Job Description</p>
-        <p class="job-skills">
-            Skills:
-            <span th:each="skill, iterStat : ${job.skills}">
-    [[${skill}]]<span th:if="${!iterStat.last}">, </span>
-</span>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Job Search Functionality
+            $("#searchInput").on("keyup", function () {
+                let value = $(this).val().toLowerCase();
+                $(".job-item").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
 
-        </p>
+            // Open Apply Modal
+            $(".apply-btn").click(function () {
+                let jobTitle = $(this).data("title");
+                $("#applyModalLabel").text("Apply for " + jobTitle);
+                $("#applyModal").modal("show");
+            });
+
+            // Add New Job
+            $("#addJobForm").submit(function (e) {
+                e.preventDefault();
+                let title = $("#jobTitle").val();
+                let description = $("#jobDescription").val();
+                let skills = $("#jobSkills").val();
+                let jobHtml = `
+                    <div class="job-item border-bottom pb-3 mb-3">
+                        <h2 class="job-title">${title}</h2>
+                        <p class="job-description">${description}</p>
+                        <p class="job-skills text-success">Skills: ${skills}</p>
+                        <button class="btn btn-primary apply-btn" data-title="${title}">Apply</button>
+                    </div>`;
+                $("#jobList").append(jobHtml);
+                $("#addJobModal").modal("hide");
+                $("#addJobForm")[0].reset();
+            });
+        });
+    </script>
+</head>
+<body class="bg-light">
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Job Listings</h1>
+    <input id="searchInput" type="text" class="form-control mb-3" placeholder="Search for jobs...">
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addJobModal">Post a Job</button>
+    </div>
+
+    <div id="jobList" class="job-list p-4 bg-white rounded shadow-sm">
+        <div th:each="job : ${jobs}" class="job-item border-bottom pb-3 mb-3">
+            <h2 class="job-title" th:text="${job.title}">Job Title</h2>
+            <p class="job-description" th:text="${job.description}">Job Description</p>
+            <p class="job-skills text-success">
+                Skills: <span th:each="skill, iterStat : ${job.skills}">[[${skill}]]<span th:if="${!iterStat.last}">, </span></span>
+            </p>
+            <button class="btn btn-primary apply-btn" th:attr="data-title=${job.title}">Apply</button>
+        </div>
     </div>
 </div>
+
+<!-- Apply Modal -->
+<div class="modal fade" id="applyModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="applyModalLabel">Apply for Job</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label">Your Name</label>
+                        <input type="text" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Application</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Job Modal -->
+<div class="modal fade" id="addJobModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Post a Job</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addJobForm">
+                    <div class="mb-3">
+                        <label class="form-label">Job Title</label>
+                        <input type="text" id="jobTitle" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea id="jobDescription" class="form-control" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Skills (comma-separated)</label>
+                        <input type="text" id="jobSkills" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Add Job</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
