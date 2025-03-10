@@ -39,8 +39,8 @@ jobs:
       - name: Build Docker image
         run: docker build -t moses-winbood-ayandau .
 
-      - name: Tag Docker image
-        run: docker tag moses-winbood-ayandau:latest public.ecr.aws/e4q9f5a4/moses-winbood-ayandau:latest
+      - - name: Tag Docker image
+      - run: docker tag moses-winbood-ayandau:latest public.ecr.aws/e4q9f5a4/moses-winbood-ayandau:moses-winbood-ayandau
 
       - name: Push Docker image to Amazon ECR Public
-        run: docker push public.ecr.aws/e4q9f5a4/moses-winbood-ayandau:latest
+      - run: docker push public.ecr.aws/e4q9f5a4/moses-winbood-ayandau:moses-winbood-ayandau
