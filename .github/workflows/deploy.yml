@@ -29,7 +29,6 @@ jobs:
           aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
           aws-region: us-east-1
 
-
       - name: Login to Amazon ECR Public
         id: login-ecr-public
         uses: aws-actions/amazon-ecr-login@v2
@@ -39,8 +38,8 @@ jobs:
       - name: Build Docker image
         run: docker build -t moses-winbood-ayandau .
 
-      - - name: Tag Docker image
-      - run: docker tag moses-winbood-ayandau:latest public.ecr.aws/e4q9f5a4/moses-winbood-ayandau:moses-winbood-ayandau
+      - name: Tag Docker image
+        run: docker tag moses-winbood-ayandau:latest public.ecr.aws/e4q9f5a4/moses-winbood-ayandau:moses-winbood-ayandau
 
       - name: Push Docker image to Amazon ECR Public
-      - run: docker push public.ecr.aws/e4q9f5a4/moses-winbood-ayandau:moses-winbood-ayandau
+        run: docker push public.ecr.aws/e4q9f5a4/moses-winbood-ayandau:moses-winbood-ayandau
