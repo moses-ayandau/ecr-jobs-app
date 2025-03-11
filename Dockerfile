@@ -1,5 +1,5 @@
 FROM eclipse-temurin:17-jre
-LABEL maintainer="your_email@example.com"
+LABEL maintainer="moses@gmail.com"
 
 WORKDIR /app
 
